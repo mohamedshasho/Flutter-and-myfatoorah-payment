@@ -1,13 +1,10 @@
 class CardDirect {
-  String number;
+  String? number;
   String? name;
-  String expiryMonth;
-  String expiryYear;
-  String securityCode;
+  String? expiryMonth;
+  String? expiryYear;
+  String? securityCode;
 
   CardDirect(
-      {required this.number,
-      required this.expiryMonth,
-      required this.expiryYear,
-      required this.securityCode});
+      {this.number, this.expiryMonth, this.expiryYear, this.securityCode});
 }
