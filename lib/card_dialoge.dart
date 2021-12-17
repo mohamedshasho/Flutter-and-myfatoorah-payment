@@ -61,7 +61,7 @@ class _CardDialogState extends State<CardDialog> {
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               decoration: InputDecoration(
-                                  hintText: 'CARD NUMBER',
+                                  hintText: 'cart number',
                                   hintStyle: Theme.of(this.context)
                                       .textTheme
                                       .subtitle1!
@@ -85,18 +85,12 @@ class _CardDialogState extends State<CardDialog> {
                                 Flexible(
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
-                                    validator: (val) {
-                                      if (val!.isEmpty ||
-                                          val.length > 2 ||
-                                          val.length == 1)
-                                        return 'ERROR MONTH';
-                                      else
-                                        return null;
-                                    },
+                                    validator: (val) =>
+                                        val!.length != 2 ? "ERROR MONTH" : null,
                                     autovalidateMode:
                                         AutovalidateMode.onUserInteraction,
-                                    decoration: new InputDecoration(
-                                      hintText: 'CARD MONTH',
+                                    decoration: InputDecoration(
+                                      hintText: 'month',
                                       hintStyle: Theme.of(this.context)
                                           .textTheme
                                           .subtitle1!
@@ -119,12 +113,12 @@ class _CardDialogState extends State<CardDialog> {
                                     autovalidateMode:
                                         AutovalidateMode.onUserInteraction,
                                     decoration: InputDecoration(
-                                      hintText: 'CARD YEAR',
+                                      hintText: 'year',
                                       hintStyle: Theme.of(this.context)
                                           .textTheme
                                           .subtitle1!
                                           .copyWith(
-                                              color: Colors.white24,
+                                              color: Colors.black54,
                                               fontWeight: FontWeight.normal),
                                     ),
                                     controller: yearC,
@@ -139,16 +133,16 @@ class _CardDialogState extends State<CardDialog> {
                                     keyboardType: TextInputType.number,
                                     validator: (val) => val!.length == 3
                                         ? null
-                                        : 'ERROR SECURITY',
+                                        : 'error security',
                                     autovalidateMode:
                                         AutovalidateMode.onUserInteraction,
                                     decoration: new InputDecoration(
-                                      hintText: 'CARD SECURITY',
+                                      hintText: 'security',
                                       hintStyle: Theme.of(this.context)
                                           .textTheme
                                           .subtitle1!
                                           .copyWith(
-                                              color: Colors.white24,
+                                              color: Colors.black54,
                                               fontWeight: FontWeight.normal),
                                     ),
                                     controller: securityC,

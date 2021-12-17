@@ -33,7 +33,6 @@ class MyFatoorahService {
       {required this.paymentMode,
       required this.test,
       required this.secret,
-      //required this.paymentDirect,
       required this.currencyIso,
       required this.invoiceAmount});
 
@@ -121,17 +120,16 @@ class MyFatoorahService {
     /// only 9 PaymentMethodId for test
     var _body = {
       'PaymentMethodId':
-          paymentMode == 'test' ? 9 : bodyExecute.paymentMethodId,
-      "CustomerName": bodyExecute.customerName,
-      "NotificationOption": bodyExecute.NotificationOption,
-      // "MobileCountryCode": "965",
-      "CustomerMobile": bodyExecute.customerMobile,
-      "CustomerEmail": bodyExecute.customerEmail,
-      "InvoiceValue": bodyExecute.invoiceValue,
+          paymentMode == "test" ? 9 : bodyExecute.paymentMethodId,
+      "CustomerName": bodyExecute.customerName, //optional
       "DisplayCurrencyIso": bodyExecute.displayCurrencyIso,
-      'CallBackUrl': bodyExecute.callBackUrl,
-      'ErrorUrl': bodyExecute.errorUrl,
-      'Language': 'en',
+      "MobileCountryCode": "965", //optional
+      "CustomerMobile": bodyExecute.customerMobile, //optional
+      "CustomerEmail": bodyExecute.customerEmail, //optional
+      "InvoiceValue": bodyExecute.invoiceValue,
+      'CallBackUrl': bodyExecute.callBackUrl, //optional
+      'ErrorUrl': bodyExecute.errorUrl, //optional
+      'Language': 'ar', //optional
     };
     try {
       if (paymentMode == 'test') {
@@ -144,6 +142,7 @@ class MyFatoorahService {
           headers: _headers,
           body: jsonEncode(_body),
         );
+        print(response.statusCode);
         if (response.statusCode == 200) {
           Map<String, dynamic> data = jsonDecode(response.body);
           if (data['IsSuccess']) {

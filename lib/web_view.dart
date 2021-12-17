@@ -58,13 +58,14 @@ class _WebViewInAppState extends State<WebViewInApp> {
       },
       onLoadStart: (controller, url) {
         print('onLoadStart $url');
-        if (url.toString().contains('google')) {
+        if (url.toString().contains('done') ||
+            url.toString().contains('error')) {
           Navigator.pop(context);
         }
       },
       onTitleChanged: (con, title) {
         print('onTitleChanged $title');
-        if (title!.contains('Google')) {
+        if (title!.contains('done') || title.contains('error')) {
           Navigator.pop(context);
         }
       },

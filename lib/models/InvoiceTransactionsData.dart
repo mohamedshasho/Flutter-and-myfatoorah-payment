@@ -2,7 +2,7 @@ class InvoiceTransactionsData {
   String paymentGateway;
   String transactionStatus;
   String paidCurrencyValue;
-  String error;
+  String? error;
 
   InvoiceTransactionsData(
       {required this.paidCurrencyValue,

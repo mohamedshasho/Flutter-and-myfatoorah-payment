@@ -24,8 +24,7 @@ class MyfatoorahResponseStatus {
           ? 'Validation Success'
           : json['ValidationErrors'],
       data: DataStatus.fromJson(json['Data']),
-      invoiceTransactions: InvoiceTransactionsData.fromJson(
-          json['Data']['InvoiceTransactions'][0]),
+      invoiceTransactions: InvoiceTransactionsData.fromJson(tran[0]),
     );
   }
 }

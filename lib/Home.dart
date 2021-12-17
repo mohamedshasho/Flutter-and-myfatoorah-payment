@@ -11,11 +11,10 @@ import 'models/MyfatoorahResponseStatus.dart';
 import 'myfatoorah_select_initiate.dart';
 import 'web_view.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   static const String apiTest = "https://apitest.myfatoorah.com/";
   static const String tokenTest =
       "rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL";
-  bool progress = false;
   static const List currencyCode = [
     'KWD',
     'SAR',
@@ -26,12 +25,24 @@ class Home extends StatelessWidget {
     'JOD',
     'EGP'
   ];
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  bool progress = false;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   double totalPrice = 5.0;
+
   late MyFatoorahService _myFatoorahService;
+
   late MyfatoorahResponseInitiate _responseInitiate;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Center(
           child: !progress
               ? ElevatedButton(
@@ -46,9 +57,12 @@ class Home extends StatelessWidget {
 
   myfatoorahPayment(BuildContext context) async {
     try {
+      setState(() {
+        progress = true;
+      });
       String payment_mode = 'test';
-      String currency_code = currencyCode[0];
-      String _kEYTest = tokenTest;
+      String currency_code = Home.currencyCode[0];
+      String _kEYTest = Home.tokenTest;
       // String _kEYlive = tokenTest;
       _myFatoorahService = MyFatoorahService(
           paymentMode: payment_mode,
@@ -65,10 +79,9 @@ class Home extends StatelessWidget {
             builder: (context) => MyfatoorahSelectInitiate(_responseInitiate),
           ),
         );
-        String mobile = '';
-        String email = '';
-        String username = '';
-
+        String mobile = '12345678';
+        String email = 'email@gmail.com';
+        String username = 'mohamedshasho';
         if (selectPaymentId != -1 && selectPaymentId != null) {
           print('selectPaymentId: ' + selectPaymentId.toString());
           MyfatoorahBodyExecute bodyExecute = MyfatoorahBodyExecute(
@@ -80,7 +93,7 @@ class Home extends StatelessWidget {
               invoiceValue: totalPrice);
           MyfatoorahResponseExecute responseExecute =
               await _myFatoorahService.postExecute(bodyExecute);
-
+          print("response execute ${responseExecute.isSuccess}");
           if (responseExecute.isSuccess) {
             String? myFatoorahPayId =
                 responseExecute.data!.invoiceId.toString();
@@ -93,7 +106,14 @@ class Home extends StatelessWidget {
                   return CardDialog();
                 }).then((valueFromDialog) async {
               if (valueFromDialog != null) {
-                CardDirect _cardDirect = valueFromDialog;
+                //  CardDirect _cardDirect = valueFromDialog;
+                //test card
+                CardDirect _cardDirect = CardDirect(
+                    number: "5123450000000008",
+                    expiryMonth: "12",
+                    expiryYear: "25",
+                    securityCode: "123");
+
                 _cardDirect.name = username;
 
                 MyfatoorahResponseDirect responseDirect =
@@ -117,74 +137,82 @@ class Home extends StatelessWidget {
                       if (status.isSuccess) {
                         if (status.invoiceTransactions!.transactionStatus ==
                             'InProgress') {
-                          // setSnackbar(
-                          //     getTranslated(context, 'Failed'), _scaffoldKey);
-                          // checkoutState(() {
-                          //   _isProgress = false;
-                          // });
+                          setSnackbar("InProgress", _scaffoldKey);
+                          setState(() {
+                            progress = false;
+                          });
                         } else if (status
                                 .invoiceTransactions!.transactionStatus ==
                             'Succss') {
-                          //   placeOrder(status.data.invoiceStatus);
+                          setSnackbar(
+                              status.invoiceTransactions!.transactionStatus,
+                              _scaffoldKey);
+                          setState(() {
+                            progress = false;
+                          });
                         } else if (status
                                 .invoiceTransactions!.transactionStatus ==
                             'Failed') {
-                          // setSnackbar(
-                          //     getTranslated(context, 'Failed'), _scaffoldKey);
-                          // checkoutState(() {
-                          //   _isProgress = false;
-                          // });
+                          setSnackbar(
+                              status.invoiceTransactions!.transactionStatus,
+                              _scaffoldKey);
+                          setState(() {
+                            progress = false;
+                          });
                         }
                         print('status: ' + status.data!.invoiceStatus);
                         print('transactionStatus: ' +
                             status.invoiceTransactions!.transactionStatus);
                       } else {
-                        // setSnackbar(
-                        //     status.message != null
-                        //         ? status.message
-                        //         : status.validationErrors,
-                        //     _checkscaffoldKey);
-                        // setState(() {
-                        //   _isProgress = false;
-                        // });
+                        setSnackbar(status.message!, _scaffoldKey);
+                        progress = false;
+                        setState(() {});
                       }
                     });
-                    // }
                   }
                 } else {
-                  // checkoutState(() {
-                  //   _isProgress = false;
-                  // });
-                  // setSnackbar(responseDirect.message, _checkscaffoldKey);
-                  // if (responseDirect.data != null)
-                  //   print('error cart direct:' +
-                  //       responseDirect.data.errorMessage);
+                  setSnackbar(responseDirect.message!, _scaffoldKey);
+                  progress = false;
+                  setState(() {});
                 }
               } else {
-                // checkoutState(() {
-                //   _isProgress = false;
-                // });
+                progress = false;
+                setState(() {});
+                setSnackbar("No value", _scaffoldKey);
               }
             });
           } else {
-            // setSnackbar(responseExecute.validationErrors, _checkscaffoldKey);
-            // checkoutState(() {
-            //   _isProgress = false;
-            // });
+            progress = false;
+            setState(() {});
+            setSnackbar(responseExecute.validationErrors!, _scaffoldKey);
           }
         } else {
-          // checkoutState(() {
-          //   _isProgress = false;
-          // });
+          progress = false;
+          setState(() {});
+          setSnackbar("No select payment type", _scaffoldKey);
         }
       } else {
-        // setSnackbar(_responseInitiate.validationErrors, _checkscaffoldKey);
-        // checkoutState(() {
-        //   _isProgress = false;
-        // });
+        progress = false;
+        setState(() {});
+        setSnackbar(_responseInitiate.validationErrors!, _scaffoldKey);
       }
     } catch (e) {
+      setSnackbar("Error something!", _scaffoldKey);
+      progress = false;
+      setState(() {});
       print(e);
     }
+  }
+
+  setSnackbar(String msg, GlobalKey<ScaffoldState> _scaffoldKey) {
+    ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+      content: new Text(
+        msg,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.black),
+      ),
+      backgroundColor: Colors.white,
+      elevation: 1.0,
+    ));
   }
 }

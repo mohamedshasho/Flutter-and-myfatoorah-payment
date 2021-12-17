@@ -9,8 +9,10 @@ class MyfatoorahBodyExecute {
   final String customerEmail;
   final double invoiceValue;
   final String displayCurrencyIso;
-  final String callBackUrl = "https://done"; // url when success payment
-  final String errorUrl = "https://error"; // url when field payment
+  final String callBackUrl =
+      "https://yoursite.com/done"; // url when success payment
+  final String errorUrl =
+      "https://yoursite.com/error"; // url when field payment
 
   MyfatoorahBodyExecute(
       {required this.paymentMethodId,
